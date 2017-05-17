@@ -98,6 +98,7 @@ class SocketManager : NSObject, GCDAsyncSocketDelegate {
     
     //接受数据
     func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) -> Void {
+        self.socket?.readData(withTimeout: -1, tag: 0)
         
         if tag == self.heartRequestTag {
             NSLog("received heart")
