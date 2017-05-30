@@ -105,7 +105,13 @@ class SocketManager : NSObject, GCDAsyncSocketDelegate {
         }
         else {
             if let text = String(data: data as Data, encoding: String.Encoding.utf8) {
-                delegate?.socketDidReceivedText(text, tag: tag)
+                
+                let splitText = text.characters.split(separator: "\r\n").map(String.init)
+                
+                for singleText in splitText {
+                    delegate?.socketDidReceivedText(singleText, tag: tag)
+                }
+                
             }
         }
     }
