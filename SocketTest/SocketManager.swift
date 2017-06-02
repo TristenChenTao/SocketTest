@@ -107,17 +107,16 @@ class SocketManager : NSObject, GCDAsyncSocketDelegate {
         }
         else {
             if let text = String(data: data as Data, encoding: String.Encoding.utf8) {
-                if text.hasSuffix("\r\n") {
-                    textBuffer += text
-                    let splitText = textBuffer.characters.split(separator: "\r\n").map(String.init)
+                
+                tempText += text
+                
+                if tempText.hasSuffix("\r\n") {
+                    let splitText = tempText.characters.split(separator: "\r\n").map(String.init)
                     for receptText in splitText {
                         delegate?.socketDidReceivedText(receptText, tag: tag)
                     }
                     
-                    textBuffer = ""
-                }
-                else {
-                    textBuffer += text
+                    tempText = ""
                 }
                 
             }
