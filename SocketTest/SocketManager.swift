@@ -96,6 +96,8 @@ class SocketManager : NSObject, GCDAsyncSocketDelegate {
     
     /////////////////////////////////////////
     
+    var textBuffer = ""
+    
     //接受数据
     func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) -> Void {
         self.socket?.readData(withTimeout: -1, tag: 0)
@@ -105,11 +107,17 @@ class SocketManager : NSObject, GCDAsyncSocketDelegate {
         }
         else {
             if let text = String(data: data as Data, encoding: String.Encoding.utf8) {
-                
-                let splitText = text.characters.split(separator: "\r\n").map(String.init)
-                
-                for singleText in splitText {
-                    delegate?.socketDidReceivedText(singleText, tag: tag)
+                if text.hasSuffix("\r\n") {
+                    textBuffer += text
+                    let splitText = textBuffer.characters.split(separator: "\r\n").map(String.init)
+                    for receptText in splitText {
+                        delegate?.socketDidReceivedText(receptText, tag: tag)
+                    }
+                    
+                    textBuffer = ""
+                }
+                else {
+                    textBuffer += text
                 }
                 
             }
